@@ -9,7 +9,20 @@
   </head>
   <body>
     <!-- <model-viewer> HTML element -->
-    <model-viewer src="GLB Shigan 4.2 .glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
+    <model-viewer src="GLB Shigan 4.2 .glb" 
+      ar 
+      ar-modes="webxr scene-viewer quick-look" 
+      camera-controls 
+      tone-mapping="neutral" 
+      poster="poster.webp" 
+      shadow-intensity="1"
+      exposure="1"
+      environment-image="neutral"
+      skybox-image="neutral"
+      camera-target="0 1.5 0"
+      min-camera-orbit="auto auto auto"
+      max-camera-orbit="auto auto auto"
+      ios-src="GLB Shigan 4.2 .usdz">
       <div class="progress-bar hide" slot="progress-bar">
           <div class="update-bar"></div>
       </div>
