@@ -3,16 +3,19 @@ const modelViewer = document.querySelector('model-viewer');
 const arButton = document.getElementById('ar-button');
 const arPrompt = document.getElementById('ar-prompt');
 
-// Initialize WebXR features
-if ('xr' in navigator) {
-  navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-    if (supported) {
-      console.log('WebXR AR is supported');
-    } else {
-      console.log('WebXR AR is not supported');
-    }
-  });
-}
+// Check if the browser supports WebXR
+const isWebXRSupported = () => {
+  return 'xr' in navigator && 'isSessionSupported' in navigator.xr;
+};
+
+// Check if Quick Look is supported
+const isQuickLookSupported = () => {
+  const userAgent = window.navigator.userAgent;
+  const platform = window.navigator.platform;
+  const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+  const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+  return isIOS && isSafari;
+};
 
 const onProgress = (event) => {
   const progressBar = event.target.querySelector('.progress-bar');
@@ -35,28 +38,14 @@ arButton.addEventListener('click', async () => {
   const device = detectDevice();
   
   try {
-    if (device === 'ios') {
-      // iOS specific handling using Quick Look
-      console.log('Activating Quick Look AR for iOS');
-      if (modelViewer.canActivateAR) {
-        await modelViewer.activateAR();
-        arPrompt.style.display = 'none';
-      } else {
-        throw new Error('Quick Look AR not supported on this iOS device');
-      }
-    } else if (device === 'android') {
-      // Android specific handling using Scene Viewer
-      console.log('Activating Scene Viewer AR for Android');
-      if (modelViewer.canActivateAR) {
-        await modelViewer.activateAR();
-        arPrompt.style.display = 'none';
-      } else {
-        throw new Error('Scene Viewer AR not supported on this Android device');
-      }
+    console.log('Starting AR session for', device);
+    if (modelViewer.canActivateAR) {
+      await modelViewer.activateAR();
+      arPrompt.style.display = 'none';
+      console.log('AR session started successfully');
     } else {
-      throw new Error('AR may not be supported on this device');
+      throw new Error('AR не поддерживается на этом устройстве');
     }
-    console.log('AR session started successfully');
   } catch (error) {
     console.error('Error starting AR:', error);
     alert(`AR не поддерживается на этом устройстве: ${error.message}`);
@@ -66,18 +55,27 @@ arButton.addEventListener('click', async () => {
 // Detect AR support and update UI accordingly
 function updateARButton() {
   const device = detectDevice();
+  const webXRSupported = isWebXRSupported();
+  const quickLookSupported = isQuickLookSupported();
   
-  if (device === 'ios') {
-    // Always show AR button on iOS as we're using Quick Look
+  console.log('Device:', device);
+  console.log('WebXR supported:', webXRSupported);
+  console.log('Quick Look supported:', quickLookSupported);
+  
+  if (modelViewer.canActivateAR) {
     arButton.style.display = 'block';
-    arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Quick Look AR';
-  } else if (!modelViewer.canActivateAR) {
-    arButton.style.display = 'none';
-    arPrompt.innerHTML = 'AR не поддерживается на этом устройстве';
-  } else {
-    arButton.style.display = 'block';
-    if (device === 'android') {
+    if (device === 'ios') {
+      arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Quick Look';
+    } else if (device === 'android') {
       arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Scene Viewer';
+    }
+  } else {
+    if (device === 'ios' && quickLookSupported) {
+      arButton.style.display = 'block';
+      arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Quick Look';
+    } else {
+      arButton.style.display = 'none';
+      arPrompt.innerHTML = 'AR не поддерживается на этом устройстве';
     }
   }
 }
@@ -105,15 +103,19 @@ modelViewer.addEventListener('model-visibility', (event) => {
   console.log('Model visibility changed:', event.detail.visible);
 });
 
+// AR specific events
+modelViewer.addEventListener('ar-status', (event) => {
+  console.log('AR Status:', event.detail.status);
+});
+
+modelViewer.addEventListener('ar-tracking', (event) => {
+  console.log('AR Tracking:', event.detail.status);
+});
+
 // Initialize AR button state
 updateARButton();
 
 // Add load event listener
 window.addEventListener('load', () => {
   updateARButton();
-  
-  // iOS specific: Check if running in standalone mode
-  if (window.navigator.standalone) {
-    document.body.classList.add('ios-standalone');
-  }
 });

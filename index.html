@@ -10,30 +10,30 @@
     <!-- WebXR Polyfill for better cross-browser support -->
     <script src="https://unpkg.com/webxr-polyfill@latest/build/webxr-polyfill.js"></script>
     <!-- Import the component -->
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer@3.3.0/dist/model-viewer.min.js"></script>
   </head>
   <body>
     <div class="container">
       <h1>3D Model Viewer</h1>
       <!-- <model-viewer> HTML element -->
       <model-viewer 
-        src="GLB Shigan 4.2 .glb" 
-        ar 
-        ar-modes="webxr scene-viewer quick-look" 
+        src="GLB Shigan 4.2 .glb"
+        ar
+        ar-modes="scene-viewer quick-look webxr"
         ar-scale="fixed"
-        camera-controls 
-        tone-mapping="neutral" 
-        poster="poster.webp" 
+        camera-controls
         shadow-intensity="1"
-        alt="3D Model Viewer"
+        shadow-softness="1"
         exposure="1"
-        ios-src="GLB Shigan 4.2 .glb"
         environment-image="neutral"
         auto-rotate
         auto-rotate-delay="1000"
         rotation-per-second="30deg"
-        loading="eager"
-        reveal="auto"
+        interaction-prompt="none"
+        quick-look-browsers="safari chrome"
+        poster="poster.webp"
+        alt="3D Model Viewer"
+        ios-src="GLB Shigan 4.2 .glb"
       >
         <div class="progress-bar hide" slot="progress-bar">
           <div class="update-bar"></div>
