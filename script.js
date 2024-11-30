@@ -10,4 +10,17 @@ const onProgress = (event) => {
     progressBar.classList.remove('hide');
   }
 };
+
 document.querySelector('model-viewer').addEventListener('progress', onProgress);
+
+// Handle AR button click
+const arButton = document.getElementById('ar-button');
+arButton.addEventListener('click', (event) => {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  
+  if (isIOS) {
+    event.preventDefault();
+    // Открываем USDZ напрямую через Quick Look
+    window.location.href = 'GLB Shigan 4.2  .usdz';
+  }
+});
