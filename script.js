@@ -3,18 +3,10 @@ const modelViewer = document.querySelector('model-viewer');
 const arButton = document.getElementById('ar-button');
 const arPrompt = document.getElementById('ar-prompt');
 
-// Check if the browser supports WebXR
-const isWebXRSupported = () => {
-  return 'xr' in navigator && 'isSessionSupported' in navigator.xr;
-};
-
 // Check if Quick Look is supported
 const isQuickLookSupported = () => {
   const userAgent = window.navigator.userAgent;
-  const platform = window.navigator.platform;
-  const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-  const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
-  return isIOS && isSafari;
+  return /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
 };
 
 const onProgress = (event) => {
@@ -36,16 +28,23 @@ modelViewer.addEventListener('progress', onProgress);
 // Enhanced AR interaction with platform-specific handling
 arButton.addEventListener('click', async () => {
   const device = detectDevice();
+  console.log('Device detected:', device);
   
   try {
-    console.log('Starting AR session for', device);
-    if (modelViewer.canActivateAR) {
-      await modelViewer.activateAR();
-      arPrompt.style.display = 'none';
-      console.log('AR session started successfully');
+    if (device === 'ios') {
+      // For iOS, we'll let Quick Look handle the AR view
+      console.log('Using Quick Look for iOS');
+      // The model-viewer component will handle the Quick Look activation
     } else {
-      throw new Error('AR не поддерживается на этом устройстве');
+      // For other devices, use the standard AR activation
+      if (modelViewer.canActivateAR) {
+        await modelViewer.activateAR();
+        console.log('AR activated for non-iOS device');
+      } else {
+        throw new Error('AR не поддерживается на этом устройстве');
+      }
     }
+    arPrompt.style.display = 'none';
   } catch (error) {
     console.error('Error starting AR:', error);
     alert(`AR не поддерживается на этом устройстве: ${error.message}`);
@@ -55,28 +54,25 @@ arButton.addEventListener('click', async () => {
 // Detect AR support and update UI accordingly
 function updateARButton() {
   const device = detectDevice();
-  const webXRSupported = isWebXRSupported();
   const quickLookSupported = isQuickLookSupported();
   
   console.log('Device:', device);
-  console.log('WebXR supported:', webXRSupported);
   console.log('Quick Look supported:', quickLookSupported);
   
-  if (modelViewer.canActivateAR) {
-    arButton.style.display = 'block';
-    if (device === 'ios') {
-      arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Quick Look';
-    } else if (device === 'android') {
-      arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Scene Viewer';
-    }
-  } else {
-    if (device === 'ios' && quickLookSupported) {
+  if (device === 'ios') {
+    if (quickLookSupported) {
       arButton.style.display = 'block';
       arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Quick Look';
     } else {
       arButton.style.display = 'none';
       arPrompt.innerHTML = 'AR не поддерживается на этом устройстве';
     }
+  } else if (modelViewer.canActivateAR) {
+    arButton.style.display = 'block';
+    arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра модели';
+  } else {
+    arButton.style.display = 'none';
+    arPrompt.innerHTML = 'AR не поддерживается на этом устройстве';
   }
 }
 
@@ -85,10 +81,8 @@ function detectDevice() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-    console.log('iOS device detected');
     return 'ios';
   } else if (/android/i.test(userAgent)) {
-    console.log('Android device detected');
     return 'android';
   }
   return 'other';
@@ -110,6 +104,10 @@ modelViewer.addEventListener('ar-status', (event) => {
 
 modelViewer.addEventListener('ar-tracking', (event) => {
   console.log('AR Tracking:', event.detail.status);
+});
+
+modelViewer.addEventListener('error', (event) => {
+  console.error('Model Viewer Error:', event.detail);
 });
 
 // Initialize AR button state
