@@ -1,54 +1,27 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>3D Model Viewer with AR</title>
+    <title>&lt;model-viewer&gt; template</title>
     <meta charset="utf-8">
-    <meta name="description" content="Interactive 3D Model Viewer with AR Support">
+    <meta name="description" content="&lt;model-viewer&gt; template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <link type="text/css" href="./styles.css" rel="stylesheet"/>
-    <!-- WebXR Polyfill for better cross-browser support -->
-    <script src="https://unpkg.com/webxr-polyfill@latest/build/webxr-polyfill.js"></script>
-    <!-- Import the component -->
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   </head>
   <body>
-    <div class="container">
-      <h1>3D Model Viewer</h1>
-      <!-- <model-viewer> HTML element -->
-      <model-viewer 
-        src="GLB Shigan 4.2 .glb"
-        ios-src="GLB Shigan 4.2 .glb"
-        ar
-        ar-modes="quick-look scene-viewer webxr"
-        camera-controls
-        ar-scale="auto"
-        shadow-intensity="1"
-        exposure="1"
-        environment-image="neutral"
-        auto-rotate
-        auto-rotate-delay="1000"
-        rotation-per-second="30deg"
-        interaction-prompt="none"
-        ar-placement="floor"
-        ar-status="not-presenting"
-        quick-look-browsers="safari chrome"
-        poster="poster.webp"
-        alt="3D Model Viewer"
-      >
-        <div class="progress-bar hide" slot="progress-bar">
+    <!-- <model-viewer> HTML element -->
+    <model-viewer src="GLB Shigan 4.2 .glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
+      <div class="progress-bar hide" slot="progress-bar">
           <div class="update-bar"></div>
-        </div>
-        <button slot="ar-button" id="ar-button">
-          View in AR
-        </button>
-        <div id="ar-prompt">
-          <img src="ar_hand_prompt.png" alt="AR Prompt">
-          <p>Tap the AR button to place the model in your space</p>
-        </div>
-      </model-viewer>
-    </div>
-    
+      </div>
+      <button slot="ar-button" id="ar-button">
+          View in your space
+      </button>
+      <div id="ar-prompt">
+          <img src="ar_hand_prompt.png">
+      </div>
+    </model-viewer>  
     <script src="script.js"></script>
+    <!-- Loads <model-viewer> for browsers: -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
   </body>
 </html>
