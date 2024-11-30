@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="description" content="&lt;model-viewer&gt; template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link type="text/css" href="./styles.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   </head>
@@ -17,7 +19,7 @@
       camera-controls 
       tone-mapping="neutral" 
       poster="poster.webp" 
-      shadow-intensity="1"
+      shadow-intensity="0.5"
       exposure="1"
       environment-image="neutral"
       skybox-image="neutral"
@@ -30,8 +32,7 @@
       camera-orbit="-45deg 75deg 105%"
       field-of-view="30deg"
       interpolation-decay="200"
-      shadow-softness="0"
-      environment-intensity="1.5">
+      environment-intensity="1">
       <div class="progress-bar hide" slot="progress-bar">
           <div class="update-bar"></div>
       </div>
