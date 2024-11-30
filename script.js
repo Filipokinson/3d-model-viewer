@@ -36,20 +36,22 @@ arButton.addEventListener('click', async () => {
   
   try {
     if (device === 'ios') {
-      // iOS specific handling
+      // iOS specific handling using Quick Look
+      console.log('Activating Quick Look AR for iOS');
       if (modelViewer.canActivateAR) {
         await modelViewer.activateAR();
         arPrompt.style.display = 'none';
       } else {
-        throw new Error('AR not supported on this iOS device');
+        throw new Error('Quick Look AR not supported on this iOS device');
       }
     } else if (device === 'android') {
-      // Android specific handling
+      // Android specific handling using Scene Viewer
+      console.log('Activating Scene Viewer AR for Android');
       if (modelViewer.canActivateAR) {
         await modelViewer.activateAR();
         arPrompt.style.display = 'none';
       } else {
-        throw new Error('AR not supported on this Android device');
+        throw new Error('Scene Viewer AR not supported on this Android device');
       }
     } else {
       throw new Error('AR may not be supported on this device');
@@ -63,16 +65,19 @@ arButton.addEventListener('click', async () => {
 
 // Detect AR support and update UI accordingly
 function updateARButton() {
-  if (!modelViewer.canActivateAR) {
+  const device = detectDevice();
+  
+  if (device === 'ios') {
+    // Always show AR button on iOS as we're using Quick Look
+    arButton.style.display = 'block';
+    arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Quick Look AR';
+  } else if (!modelViewer.canActivateAR) {
     arButton.style.display = 'none';
     arPrompt.innerHTML = 'AR не поддерживается на этом устройстве';
   } else {
     arButton.style.display = 'block';
-    const device = detectDevice();
-    if (device === 'ios') {
-      arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в дополненной реальности (iOS)';
-    } else if (device === 'android') {
-      arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в дополненной реальности (Android)';
+    if (device === 'android') {
+      arPrompt.innerHTML = 'Нажмите кнопку AR для просмотра в Scene Viewer';
     }
   }
 }
@@ -81,12 +86,12 @@ function updateARButton() {
 function detectDevice() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   
-  if (/android/i.test(userAgent)) {
-    console.log('Android device detected');
-    return 'android';
-  } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
     console.log('iOS device detected');
     return 'ios';
+  } else if (/android/i.test(userAgent)) {
+    console.log('Android device detected');
+    return 'android';
   }
   return 'other';
 }
@@ -106,4 +111,9 @@ updateARButton();
 // Add load event listener
 window.addEventListener('load', () => {
   updateARButton();
+  
+  // iOS specific: Check if running in standalone mode
+  if (window.navigator.standalone) {
+    document.body.classList.add('ios-standalone');
+  }
 });
