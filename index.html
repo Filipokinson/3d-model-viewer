@@ -1,72 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Model Viewer</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f0f0;
-        }
-        
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            outline: 2px solid #000000;
-            border-radius: 8px;
-        }
-
-        .ar-button {
-            background-color: white;
-            border-radius: 4px;
-            border: 2px solid #000000;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #000000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .ar-button:hover {
-            background-color: #000000;
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .ar-button:active {
-            transform: scale(0.95);
-        }
-    </style>
-</head>
-<body>
-    <model-viewer
-        src="model.glb"
-        ios-src="GLB Shigan 4.2  .usdz"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        camera-controls
-        auto-rotate
-        shadow-intensity="1"
-        shadow-softness="0.7"
-        exposure="1"
-        environment-image="neutral"
-        ar-scale="fixed"
-        ar-placement="floor"
-        ar-status="not-presenting"
-        style="--ar-border-color: #000000; --ar-border-width: 2px;"
-        alt="3D model">
-    </model-viewer>
-</body>
+  <head>
+    <title>&lt;model-viewer&gt; template</title>
+    <meta charset="utf-8">
+    <meta name="description" content="&lt;model-viewer&gt; template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" href="./styles.css" rel="stylesheet"/>
+  </head>
+  <body>
+    <!-- <model-viewer> HTML element -->
+    <model-viewer src="Mod off Shigan 4.2 .glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
+      <div class="progress-bar hide" slot="progress-bar">
+          <div class="update-bar"></div>
+      </div>
+      <button slot="ar-button" id="ar-button">
+          View in your space
+      </button>
+      <div id="ar-prompt">
+          <img src="ar_hand_prompt.png">
+      </div>
+    </model-viewer>  
+    <script src="script.js"></script>
+    <!-- Loads <model-viewer> for browsers: -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  </body>
 </html>
