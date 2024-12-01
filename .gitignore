@@ -1,11 +1,4 @@
-__pycache__/
-*.py[cod]
-*$py.class
+.DS_Store
+node_modules/
 .env
-.venv
-env/
-venv/
-ENV/
-.idea/
-.vscode/
 *.log
